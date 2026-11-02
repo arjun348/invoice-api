@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'multi_tenant' => env('MULTI_TENANT', false),
+
 ];
