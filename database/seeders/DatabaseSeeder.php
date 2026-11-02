@@ -13,7 +13,23 @@ class DatabaseSeeder extends Seeder
     {
         $company = Company::updateOrCreate(
             ['name' => 'Demo Company'],
-            ['name' => 'Demo Company']
+            [
+                'name' => 'Demo Company',
+                'status' => 'active',
+            ]
+        );
+
+        $superAdminEmail = env('SUPER_ADMIN_EMAIL', 'superadmin@demo.test');
+        $superAdminPassword = env('SUPER_ADMIN_PASSWORD', 'SuperAdmin@Secure2026!');
+
+        User::updateOrCreate(
+            ['email' => $superAdminEmail],
+            [
+                'name' => 'Super Admin',
+                'company_id' => null,
+                'role' => 'super_admin',
+                'password' => Hash::make($superAdminPassword),
+            ]
         );
 
         User::updateOrCreate(
@@ -22,6 +38,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Demo Admin',
                 'company_id' => $company->id,
                 'role' => 'admin',
+                'is_primary_admin' => true,
                 'password' => Hash::make('Admin@12345'),
             ]
         );
@@ -32,6 +49,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Demo Viewer',
                 'company_id' => $company->id,
                 'role' => 'viewer',
+                'is_primary_admin' => false,
                 'password' => Hash::make('Viewer@12345'),
             ]
         );

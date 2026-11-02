@@ -17,7 +17,11 @@ class InvoiceRequest extends FormRequest
         $invoiceId = $this->route('invoice');
 
         return [
-            'client_id' => ['required', 'integer'],
+            'client_id' => [
+                'required',
+                'integer',
+                Rule::exists('clients', 'id')->where('company_id', $this->user()->company_id),
+            ],
             'number' => [
                 'required',
                 'string',

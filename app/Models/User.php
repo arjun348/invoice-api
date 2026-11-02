@@ -25,7 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'company_id',
-        'role'
+        'role',
+        'is_primary_admin',
     ];
 
     /**
@@ -49,11 +50,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => 'string',
+            'is_primary_admin' => 'boolean',
         ];
     }
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPrimaryAdmin(): bool
+    {
+        return (bool) $this->is_primary_admin;
+    }
+
+    public function isViewer(): bool
+    {
+        return $this->role === 'viewer';
     }
 }

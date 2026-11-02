@@ -21,6 +21,19 @@ class AuthController extends Controller
             ], 422);
         }
 
+        if ($user->role !== 'super_admin' && $user->company?->status !== 'active') {
+            $status = $user->company?->status ?? 'missing';
+
+            return response()->json([
+                'code' => 'company_' . $status,
+                'message' => match ($status) {
+                    'pending'  => 'Your company is awaiting approval.',
+                    'rejected' => 'Your company request was rejected.',
+                    default    => 'Your company account is suspended.',
+                },
+            ], 403);
+        }
+
         $user->tokens()->delete();
 
         return response()->json([
@@ -31,6 +44,7 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'company_id' => $user->company_id,
                 'role' => $user->role,
+                'is_primary_admin' => (bool) $user->is_primary_admin,
             ],
         ]);
     }
