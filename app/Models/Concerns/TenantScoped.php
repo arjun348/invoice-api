@@ -37,5 +37,13 @@ trait TenantScoped
                 );
             }
         });
+
+        static::creating(function ($model) {
+            if (config('app.multi_tenant') && auth()->check() && auth()->user()->role !== 'super_admin') {
+                if (! $model->company_id) {
+                    $model->company_id = auth()->user()->company_id;
+                }
+            }
+        });
     }
 }
